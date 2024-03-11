@@ -1,21 +1,18 @@
-import { Bucket, Stack, StackProps, Construct } from "sst/constructs";
+import { Bucket, StackContext, Table } from "sst/constructs";
 
-export class StorageStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
+export function StorageStack({ stack }: StackContext) {
+  // Create the DynamoDB table
+  const bucket = new Bucket(stack, "Uploads");
+  const table = new Table(stack, "Notes", {
+    fields: {
+      userId: "string",
+      noteId: "string",
+    },
+    primaryIndex: { partitionKey: "userId", sortKey: "noteId" },
+  });
 
-    // Create an S3 bucket
-    const bucket = new Bucket(this, "Uploads");
-
-    // Define your DynamoDB table (assuming you already have this defined)
-    const table = new Table(this, "NotesTable", {
-      // Specify your table properties here
-    });
-
-    // Return the resources in this stack
-    return {
-      bucket,
-      table,
-    };
-  }
+  return {
+    table,
+    bucket,
+  };
 }
