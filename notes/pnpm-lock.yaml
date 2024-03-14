@@ -26,10 +26,19 @@ importers:
 
   packages/core:
     dependencies:
+      aws-lambda:
+        specifier: ^1.0.7
+        version: 1.0.7
+      aws-sdk:
+        specifier: ^2.1574.0
+        version: 2.1574.0
       zod:
         specifier: ^3.22.4
         version: 3.22.4
     devDependencies:
+      '@types/aws-lambda':
+        specifier: ^8.10.134
+        version: 8.10.134
       '@types/node':
         specifier: ^20.11.24
         version: 20.11.24
