@@ -1,17 +1,29 @@
-import { it } from "vitest";
-import { initProject } from "sst/project";
-import { App, getStack } from "sst/constructs";
-import { StorageStack } from "../StorageStack";
-import { Template } from "aws-cdk-lib/assertions";
+import { expect, test } from "vitest";
+import { calculateCost } from "../src/cost";
 
-it("Test StorageStack", async () => {
-  await initProject({});
-  const app = new App({ mode: "deploy" });
-  // WHEN
-  app.stack(StorageStack);
-  // THEN
-  const template = Template.fromStack(getStack(StorageStack));
-  template.hasResourceProperties("AWS::DynamoDB::Table", {
-    BillingMode: "PAY_PER_REQUEST",
-  });
+test("Lowest tier", () => {
+  const storage = 10;
+
+  const cost = 4000;
+  const expectedCost = calculateCost(storage);
+
+  expect(cost).toEqual(expectedCost);
+});
+
+test("Middle tier", () => {
+  const storage = 100;
+
+  const cost = 20000;
+  const expectedCost = calculateCost(storage);
+
+  expect(cost).toEqual(expectedCost);
+});
+
+test("Highest tier", () => {
+  const storage = 101;
+
+  const cost = 10100;
+  const expectedCost = calculateCost(storage);
+
+  expect(cost).toEqual(expectedCost);
 });
