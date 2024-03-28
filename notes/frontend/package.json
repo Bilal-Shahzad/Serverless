@@ -17,6 +17,7 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "aws-amplify": "^5",
     "bootstrap": "^5.3.3",
     "react-bootstrap": "^2.10.2",
     "react-icons": "^5.0.1",
