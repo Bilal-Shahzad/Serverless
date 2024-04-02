@@ -12,9 +12,22 @@ export default function Login() {
     return email.length > 0 && password.length > 0;
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-  }
+
+    try {
+        await Auth.signIn(email, password);
+        alert("Logged in");
+    } catch (error) {
+        // Prints the full error
+        console.error(error);
+        if (error instanceof Error) {
+            alert(error.message);
+        } else {
+            alert(String(error));
+        }
+    }
+}
 
   return (
     <div className="Login">
