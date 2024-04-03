@@ -3,8 +3,11 @@ import "./App.css";
 import 'bootstrap/dist/css/App.css';
 import Routes from "./Routes.tsx";
 import { LinkContainer } from "react-router-bootstrap";
+import { useState } from "react";
+import { AppContext, AppContextType } from "./lib/contextLib";
 
 
+const [isAuthenticated, userHasAuthenticated] = useState(false);
 function App() {
   return (
     <div className="App container py-3">
@@ -15,15 +18,25 @@ function App() {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Nav activeKey={window.location.pathname}>
-            <LinkContainer to="/signup">
-              <Nav.Link>Signup</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/login">
-              <Nav.Link>Login</Nav.Link>
-            </LinkContainer>
-          </Nav>
+          {isAuthenticated ? (
+    <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+  ) : (
+    <>
+      <LinkContainer to="/signup">
+        <Nav.Link>Signup</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to="/login">
+        <Nav.Link>Login</Nav.Link>
+      </LinkContainer>
+    </>
+  )}
         </Navbar.Collapse>
       </Navbar>
+      <AppContext.Provider
+  value={{ isAuthenticated, userHasAuthenticated } as AppContextType}
+>
+  <Routes />
+</AppContext.Provider>
       <Routes />
     </div>
   );
