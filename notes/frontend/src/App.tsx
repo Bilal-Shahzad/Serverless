@@ -7,8 +7,7 @@ import { useState } from "react";
 import { AppContext, AppContextType } from "./lib/contextLib";
 
 
-const [isAuthenticated, userHasAuthenticated] = useState(false);
-function App() {
+const [isAuthenticating, setIsAuthenticating] = useState(true);function App() {
   return (
     <div className="App container py-3">
       <Navbar collapseOnSelect bg="light" expand="md" className="mb-3 px-3">
