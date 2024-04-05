@@ -5,6 +5,9 @@ import Button from "react-bootstrap/Button";
 import "./Login.css";
 import { Auth } from "aws-amplify";
 import { useAppContext } from "../lib/context.Lib";
+import { useNavigate } from "react-router-dom";
+
+const nav = useNavigate();
 
 export default function Login() {
   const { userHasAuthenticated } = useAppContext();
@@ -17,21 +20,28 @@ export default function Login() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+  
     try {
-        await Auth.signIn(email, password);
-        userHasAuthenticated(true);
+      await Auth.signIn(email, password);
+      userHasAuthenticated(true);
+      nav("/");
     } catch (error) {
-        // Prints the full error
-        console.error(error);
-        if (error instanceof Error) {
-            alert(error.message);
-        } else {
-            alert(String(error));
-        }
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert(String(error));
+      }
     }
-}
+  }
 
+  async function handleLogout() {
+    await Auth.signOut();
+  
+    userHasAuthenticated(false);
+  
+    nav("/login");
+  }
+  
   return (
     <div className="Login">
       <Form onSubmit={handleSubmit}>
