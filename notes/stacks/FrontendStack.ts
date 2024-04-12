@@ -1,29 +1,32 @@
-import { Bucket, StackContext, Table } from "sst/constructs";
+import { StackContext, StaticSite, use } from "sst/constructs";
+import { ApiStack } from "./ApiStack";
+import { AuthStack } from "./AuthStack";
+import { StorageStack } from "./StorageStack";
 
-export function StorageStack({ stack }: StackContext) {
-  // Create an S3 bucket
-  const bucket = new Bucket(stack, "Uploads", {
-    cors: [
-      {
-        maxAge: "1 day",
-        allowedOrigins: ["*"],
-        allowedHeaders: ["*"],
-        allowedMethods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
-      },
-    ],
-  });
+export function FrontendStack({ stack, app }: StackContext) {
+  const { api } = use(ApiStack);
+  const { auth } = use(AuthStack);
+  const { bucket } = use(StorageStack);
 
-  // Create the DynamoDB table
-  const table = new Table(stack, "Notes", {
-    fields: {
-      userId: "string",
-      noteId: "string",
+  // Define our React app
+  const site = new StaticSite(stack, "ReactSite", {
+    path: "packages/frontend",
+    buildCommand: "pnpm run build",
+    buildOutput: "dist",
+    customDomain: app.stage === "prod" ? "demo.sst.dev" : undefined,
+    // Pass in our environment variables
+    environment: {
+      VITE_REGION: app.region,
+      VITE_BUCKET: bucket.bucketName,
+      VITE_USER_POOL_ID: auth.userPoolId,
+      VITE_API_URL: api.customDomainUrl || api.url,
+      VITE_USER_POOL_CLIENT_ID: auth.userPoolClientId,
+      VITE_IDENTITY_POOL_ID: auth.cognitoIdentityPoolId || "",
     },
-    primaryIndex: { partitionKey: "userId", sortKey: "noteId" },
   });
 
-  return {
-    bucket,
-    table,
-  };
+  // Show the url in the output
+  stack.addOutputs({
+    SiteUrl: site.customDomainUrl || site.url,
+  });
 }
