@@ -26,5 +26,5 @@ export default function handler(
         "Access-Control-Allow-Credentials": true,
       },
     };
-};
+  };
 }

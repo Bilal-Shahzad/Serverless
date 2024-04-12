@@ -1,7 +1,7 @@
 import { Bucket, StackContext, Table } from "sst/constructs";
 
 export function StorageStack({ stack }: StackContext) {
-  // Create the DynamoDB table
+  // Create an S3 bucket
   const bucket = new Bucket(stack, "Uploads", {
     cors: [
       {
@@ -12,7 +12,9 @@ export function StorageStack({ stack }: StackContext) {
       },
     ],
   });
-    const table = new Table(stack, "Notes", {
+
+  // Create the DynamoDB table
+  const table = new Table(stack, "Notes", {
     fields: {
       userId: "string",
       noteId: "string",
@@ -21,7 +23,7 @@ export function StorageStack({ stack }: StackContext) {
   });
 
   return {
-    table,
     bucket,
+    table,
   };
 }
