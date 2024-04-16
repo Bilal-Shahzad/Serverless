@@ -58,22 +58,21 @@ export default function Login() {
         <Stack gap={3}>
           <Form.Group controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control
-              autoFocus
+            <<Form.Control
+               autoFocus
               size="lg"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+              value={fields.email}
+              onChange={handleFieldChange}
+/>
           </Form.Group>
           <Form.Group controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
-              size="lg"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            size="lg"
+            type="password"
+            value={fields.password}
+           onChange={handleFieldChange}/>
           </Form.Group>
           <LoaderButton
             size="lg"
