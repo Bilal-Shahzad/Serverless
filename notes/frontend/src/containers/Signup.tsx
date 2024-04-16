@@ -6,6 +6,10 @@ import { useFormFields } from "../lib/hooksLib";
 import { useAppContext } from "../lib/context.Lib";
 import LoaderButton from "../components/LoaderButton";
 import "./Signup.css";
+import { Auth } from "aws-amplify";
+import { onError } from "../lib/errorLib";
+import { ISignUpResult } from "amazon-cognito-identity-js";
+
 
 export default function Signup() {
   const [fields, handleFieldChange] = useFormFields({
@@ -17,8 +21,8 @@ export default function Signup() {
   const nav = useNavigate();
   const { userHasAuthenticated } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [newUser, setNewUser] = useState<null | string>(null);
-
+  const [newUser, setNewUser] = useState<null | ISignUpResult>(null);
+  
   function validateForm() {
     return (
       fields.email.length > 0 &&
@@ -34,8 +38,33 @@ export default function Signup() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
-    setNewUser("test");
-    setIsLoading(false);
+    try {
+      const newUser = await Auth.signUp({
+        username: fields.email,
+        password: fields.password,
+      });
+      setIsLoading(false);
+      setNewUser(newUser);
+    } catch (e) {
+      onError(e);
+      setIsLoading(false);
+    }
+  }
+  
+  async function handleConfirmationSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+    setIsLoading(true);
+    try {
+      await Auth.confirmSignUp(fields.email, fields.confirmationCode);
+      await Auth.signIn(fields.email, fields.password);
+      userHasAuthenticated(true);
+      nav("/");
+    } catch (e) {
+      onError(e);
+      setIsLoading(false);
+    }
   }
 
   async function handleConfirmationSubmit(
