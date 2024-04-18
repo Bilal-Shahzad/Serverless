@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import { NoteType } from "../types/note";
 import { onError } from "../lib/errorLib";
-
+import { BsPencilSquare } from "react-icons/bs";
+import { LinkContainer } from "react-router-bootstrap";
 
 export default function Home() {
   useEffect(() => {
