@@ -2,6 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API, Storage } from "aws-amplify";
 import { onError } from "../lib/errorLib";
+import config from "../config";
+import Form from "react-bootstrap/Form";
+import { NoteType } from "../types/note";
+import Stack from "react-bootstrap/Stack";
+import LoaderButton from "../components/LoaderButton";
+import "./Notes.css";
+
 
 const [isLoading, setIsLoading] = useState(false);
 const [isDeleting, setIsDeleting] = useState(false);
