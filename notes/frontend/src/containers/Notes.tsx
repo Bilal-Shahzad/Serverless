@@ -64,6 +64,12 @@ export default function Notes() {
     file.current = event.currentTarget.files[0];
   }
   
+  function saveNote(note: NoteType) {
+    return API.put("notes", `/notes/${id}`, {
+      body: note,
+    });
+  }
+  
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     let attachment;
   
@@ -79,6 +85,23 @@ export default function Notes() {
     }
   
     setIsLoading(true);
+  
+    try {
+      if (file.current) {
+        attachment = await s3Upload(file.current);
+      } else if (note && note.attachment) {
+        attachment = note.attachment;
+      }
+  
+      await saveNote({
+        content: content,
+        attachment: attachment,
+      });
+      nav("/");
+    } catch (e) {
+      onError(e);
+      setIsLoading(false);
+    }
   }
   
   async function handleDelete(event: React.FormEvent<HTMLFormElement>) {
