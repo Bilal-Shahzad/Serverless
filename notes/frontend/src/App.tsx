@@ -53,7 +53,12 @@ return (
                 </LinkContainer>
               </>
             )}
-          </Nav>
+            <>
+            <LinkContainer to="/settings">
+             <Nav.Link>Settings</Nav.Link>
+            </LinkContainer>
+             <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+</>
         </Navbar.Collapse>
       </Navbar>
       <AppContext.Provider
