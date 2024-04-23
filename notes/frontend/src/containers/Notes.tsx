@@ -8,10 +8,17 @@ import { NoteType } from "../types/note";
 import Stack from "react-bootstrap/Stack";
 import LoaderButton from "../components/LoaderButton";
 import "./Notes.css";
+import config from "../config";
+import Form from "react-bootstrap/Form";
+import { NoteType } from "../types/note";
+import Stack from "react-bootstrap/Stack";
+import LoaderButton from "../components/LoaderButton";
+import "./Notes.css";
 
 
 const [isLoading, setIsLoading] = useState(false);
 const [isDeleting, setIsDeleting] = useState(false);
+const [note, setNote] = useState<null | NoteType>(null);
 
 export default function Notes() {
   const file = useRef<null | File>(null)
@@ -44,6 +51,50 @@ export default function Notes() {
     onLoad();
   }, [id]);
 
+  function validateForm() {
+    return content.length > 0;
+  }
+  
+  function formatFilename(str: string) {
+    return str.replace(/^\w+-/, "");
+  }
+  
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.currentTarget.files === null) return;
+    file.current = event.currentTarget.files[0];
+  }
+  
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    let attachment;
+  
+    event.preventDefault();
+  
+    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
+      alert(
+        `Please pick a file smaller than ${
+          config.MAX_ATTACHMENT_SIZE / 1000000
+        } MB.`
+      );
+      return;
+    }
+  
+    setIsLoading(true);
+  }
+  
+  async function handleDelete(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+  
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this note?"
+    );
+  
+    if (!confirmed) {
+      return;
+    }
+  
+    setIsDeleting(true);
+  }
+  
   function validateForm() {
     return content.length > 0;
   }
@@ -138,4 +189,4 @@ export default function Notes() {
         </Form>
       )}
     </div>
-  );}
+  );
