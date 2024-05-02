@@ -5,13 +5,11 @@ import Button from "react-bootstrap/Button";
 import "./Login.css";
 import { Auth } from "aws-amplify";
 import { useAppContext } from "../lib/context.Lib";
-import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../lib/errorLib";
 import { useFormFields } from "../lib/hooksLib";
 
-const nav = useNavigate();
 
 export default function Login() {
   const { userHasAuthenticated } = useAppContext();
@@ -33,7 +31,6 @@ export default function Login() {
     try {
       await Auth.signIn(email, password);
       userHasAuthenticated(true);
-      nav("/");
     } catch (error) {
       onError(error);
       setIsLoading(false);
